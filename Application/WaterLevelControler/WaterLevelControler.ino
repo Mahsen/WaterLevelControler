@@ -1,9 +1,9 @@
-#include <NTPClient.h>
+//#include <NTPClient.h>
 #include <ESP8266WiFi.h>
-#include <WiFiUdp.h>
-#include <WiFiClient.h>
-#include <ESP8266WebServer.h>
-#include <EEPROM.h>
+//#include <WiFiUdp.h>
+//#include <WiFiClient.h>
+//#include <ESP8266WebServer.h>
+//#include <EEPROM.h>
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 const int Pin_LED_MAIN =         2;
 const int Pin_LED_Red =          9; 
@@ -20,33 +20,33 @@ bool Value_Sense_Low =           false;
 bool Value_Sense_High =          false;
 int  Valve_Time_On =            0;
 
-struct struct_Log
-{
-  char Valid;
-  unsigned long long DateTime;
-  char State;
-} Log;
-const int Log_Locate_Max =       100; 
-char Log_Locate =                0; 
+//struct struct_Log
+//{
+//  char Valid;
+//  unsigned long long DateTime;
+//  char State;
+//} Log;
+//const int Log_Locate_Max =       100; 
+//char Log_Locate =                0; 
 
-struct struct_Config
-{
-  char serial[16+1];
-  char ssid[32+1];
-  char password[32+1];
-  char local[16+1];
-  char gateway[16+1];
-  char subnet[16+1];
-  int Validation;
-} Config;
+//struct struct_Config
+//{
+//  char serial[16+1];
+//  char ssid[32+1];
+//  char password[32+1];
+//  char local[16+1];
+//  char gateway[16+1];
+//  char subnet[16+1];
+//  int Validation;
+//} Config;
 
-IPAddress local;
-IPAddress gateway;
-IPAddress subnet;
+//IPAddress local;
+//IPAddress gateway;
+//IPAddress subnet;
 
-ESP8266WebServer server(80);
-WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "pool.ntp.org", 12600);
+//ESP8266WebServer server(80);
+//WiFiUDP ntpUDP;
+//NTPClient timeClient(ntpUDP, "pool.ntp.org", 12600);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Set_Value_Valve(bool Value){
   Value_Valve = Value;
@@ -133,7 +133,7 @@ unsigned long long RTC_DateTimeTo40Bit(int Year, int Month, int Day, int Hour, i
   return DateTime;
 }*/
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Log_Clear()
+/*void Log_Clear()
 {
     for(char Index=0; Index<Log_Locate_Max; Index++)
     {
@@ -146,9 +146,9 @@ void Log_Clear()
     }
     EEPROM.put(0, 0);
     EEPROM.commit();
-}
+}*/
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Log_Add(bool State)
+/*void Log_Add(bool State)
 {
     timeClient.update();
     unsigned long epochTime = timeClient.getEpochTime();
@@ -167,9 +167,9 @@ void Log_Add(bool State)
     }
     EEPROM.put(0, Log_Locate);
     EEPROM.commit();
-}
+}*/
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-String Log_Get()
+/*String Log_Get()
 {
     String text = "";
     char buffer[64];
@@ -185,15 +185,15 @@ String Log_Get()
     }
 
     return text;
-}
+}*/
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 void PrintStatus()
 {
     digitalWrite(Pin_LED_MAIN, LOW);
     char buffer[128];
-    timeClient.update();
-    unsigned long epochTime = timeClient.getEpochTime();
-    struct tm *ptm = gmtime ((time_t *)&epochTime);
+    //timeClient.update();
+    //unsigned long epochTime = timeClient.getEpochTime();
+    //struct tm *ptm = gmtime ((time_t *)&epochTime);
     
     //sprintf(buffer, "%04d/%02d/%02d %02d:%02d:%02d - - - Valve = %s", ptm->tm_year+1900, ptm->tm_mon+1, ptm->tm_mday, timeClient.getHours(), timeClient.getMinutes(), timeClient.getSeconds(), Get_Value_Valve()?"Opened":"Closed");
     sprintf(buffer, "Sense_Low=%s - - - Sense_High=%s - - - Valve = %s - - - TimeOut = %d - - - Status = %s", (Value_Sense_Low==0)?"Ok":"No", (Value_Sense_High==0)?"Ok":"No", Get_Value_Valve()?"Opened":"Closed", Valve_Time_On, (Valve_Time_On==60)?"Fault":"Normal");
@@ -202,7 +202,7 @@ void PrintStatus()
     digitalWrite(Pin_LED_MAIN, HIGH);
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Proccess_Page() 
+/*void Proccess_Page() 
 {
   String Page = "";
 
@@ -268,7 +268,7 @@ void Proccess_Page()
   }
   
   server.send(200, "text/html", Page);
-}
+}*/
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 void setup(void) {
 
@@ -296,11 +296,13 @@ void setup(void) {
   Set_Value_Valve(false);
   //}
 
+  Serial.println("IO Config ready");
+  
   /// EEprom Log
   //{
-  EEPROM.begin((sizeof(Log)*Log_Locate_Max)+4);
-  EEPROM.get(0, Log_Locate);
-  Serial.println("Loading EEprom Log");
+  //EEPROM.begin((sizeof(Log)*Log_Locate_Max)+4);
+  //EEPROM.get(0, Log_Locate);
+  //Serial.println("Loading EEprom Log");
   //}
 
   /*
@@ -326,53 +328,53 @@ void setup(void) {
   //}
   */
   
-  strcpy(Config.serial, "O903000000");
-  strcpy(Config.ssid, "Mahsen_1000");
-  strcpy(Config.password, "03100mahsen3mik");
-  strcpy(Config.local, "192.168.88.250");
-  strcpy(Config.gateway, "192.168.88.1");
-  strcpy(Config.subnet, "255.255.255.0");
+  //strcpy(Config.serial, "O903000000");
+  //strcpy(Config.ssid, "Mahsen_1000");
+  //strcpy(Config.password, "03100mahsen3mik");
+  //strcpy(Config.local, "192.168.88.250");
+  //strcpy(Config.gateway, "192.168.88.1");
+  //strcpy(Config.subnet, "255.255.255.0");
   
   /// WIFI
   //{
   //WiFi.mode(WIFI_STA);
   //WiFi.hostname(Config.serial);         
   
-  Serial.print("Configuration is ");
+  //Serial.print("Configuration is ");
   //WiFi.setAutoConnect(false);   // Not working by its own
   //WiFi.disconnect();
-  local.fromString(Config.local);
-  gateway.fromString(Config.gateway);
-  subnet.fromString(Config.subnet);
-  Serial.println(WiFi.config(local, gateway, subnet) ? "Ready" : "Failed!");
+  //local.fromString(Config.local);
+  //gateway.fromString(Config.gateway);
+  //subnet.fromString(Config.subnet);
+  //Serial.println(WiFi.config(local, gateway, subnet) ? "Ready" : "Failed!");
 
-  Serial.print("Server is ");
-  WiFi.begin(Config.ssid, Config.password);
-  for (int TimeOut=0; ((TimeOut<5) && (WiFi.status() != WL_CONNECTED)); TimeOut++)
-  {
-     delay(1000);
-  }  
-  if((WiFi.status() == WL_CONNECTED))
-  {
-      Serial.println("Ready");
-    
-      Serial.print("IP = ");
-      Serial.println(WiFi.localIP());
-    
-      server.on("/", HTTP_GET, []() 
-      {
-        Proccess_Page();
-      });
-      server.begin();    
-      Serial.println("Server started");
-    
-      timeClient.begin();
-      Serial.println("ntpUDP started");
-  }
-  else
-  {
-      Serial.println("Error");
-  }
+  //Serial.print("Server is ");
+  //WiFi.begin(Config.ssid, Config.password);
+  //for (int TimeOut=0; ((TimeOut<5) && (WiFi.status() != WL_CONNECTED)); TimeOut++)
+  //{
+  //   delay(1000);
+  //}  
+  //if((WiFi.status() == WL_CONNECTED))
+  //{
+  //    Serial.println("Ready");
+  //  
+  //    Serial.print("IP = ");
+  //    Serial.println(WiFi.localIP());
+  //  
+  //    server.on("/", HTTP_GET, []() 
+  //    {
+  //      Proccess_Page();
+  //    });
+  //    server.begin();    
+  //    Serial.println("Server started");
+  //  
+  //    timeClient.begin();
+  //    Serial.println("ntpUDP started");
+  //}
+  //else
+  //{
+  //    Serial.println("Error");
+  //}
   //}
 
 }
@@ -405,7 +407,7 @@ void loop(void)
   PrintStatus();
   
   delay(1000);
-  server.handleClient();
+  //server.handleClient();
   
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
